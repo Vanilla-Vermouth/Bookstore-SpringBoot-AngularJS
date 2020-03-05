@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Register Page</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/form-validation.css" rel="stylesheet">
+    <script src="js/angular.min.js"></script>
+</head>
+<body class="bg-light" ng-controller="myCtrl">
+
+<div class="container">
+    <div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="image/bootstrap-solid.svg" alt="" width="72" height="72">
+        <h2>Register Form</h2>
+        <p class="lead">Thank you for using our bookstore website. Have a good day!</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 order-md-1">
+            <h4 class="mb-3">User Information</h4>
+            <form class="needs-validation" th:action="@{/register}" method="post" novalidate>
+                <div th:object="${Customer}">
+
+                    <div class="mb-3">
+                        <label for="username">Username</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">@</span>
+                            </div>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Username"
+                                   required autofocus ng-model="username" ng-change="checkUsername()">
+                            <div class="alert alert-danger" role="alert" ng-if="usernameInvalid"
+                                 style="width: 100%;">
+                                <strong>Invalid: </strong> Username exists.
+                            </div>
+                            <div class="alert alert-danger" role="alert"
+                                 ng-if="usernameInputInvalid = (username.trim().length > 32)"
+                                 style="width: 100%;">
+                                <strong>Invalid: </strong> Username too long.
+                            </div>
+                            <div class="invalid-feedback" style="width: 100%;">
+                                Your username is required.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password">Password</label>
+                        <!--<div class="input-group-prepend">-->
+                        <!--<span class="input-group-text">@</span>-->
+                        <!--</div>-->
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                               required ng-model="password">
+                        <div class="alert alert-danger" role="alert"
+                             ng-if="passwordInputInvalid = (password.length > 20)"
+                             style="width: 100%;">
+                            <strong>Invalid: </strong> Password too long.
+                        </div>
+                        <div class="invalid-feedback" style="width: 100%;">
+                            Your password is required.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="name" required
+                               ng-model="name">
+                        <div class="alert alert-danger" role="alert"
+                             ng-if="nameInputInvalid = (name.length > 50)"
+                             style="width: 100%;">
+                            <strong>Invalid: </strong> Name too long.
+                        </div>
+                        <div class="invalid-feedback" style="width: 100%;">
+                            Your name is required.
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="address">Street Address</label>
+                            <input type="text" class="form-control" id="address" name="street"
+                                   placeholder="4500 Centre AVE APT OOC"
+                                   required ng-model="street">
+                            <div class="alert alert-danger" role="alert"
+                                 ng-if="streetInputInvalid = (street.length > 255)"
+                                 style="width: 100%;">
+                                <strong>Invalid: </strong> Street too long.
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter your street address.
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="zip">Zip</label>
+                            <input type="text" class="form-control" id="zip" name="zip_code" placeholder="" required
+                                   ng-model="zip_code" ng-change="checkZip()">
+                            <div class="alert alert-danger" role="alert" ng-if="zip_code && !zipValid"
+                                 style="width: 100%;">
+                                <strong>Invalid: </strong> Zip not exists.
+                            </div>
+                            <div class="invalid-feedback">
+                                Zip code required.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <label for="kind">Kind</label>
+                            <select class="custom-select d-block w-100" id="kind" name="kind" required ng-model="kind">
+                                <option value="">Choose...</option>
+                                <option value="home">Home</option>
+                                <option value="business">Business</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a valid kind.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="row" ng-if="kind =='home'" th:object="${HomeCustomer}">
+                        <div class="col-md-3 mb-3">
+                            <label for="marriage_status">Marriage Status</label>
+                            <select class="custom-select d-block w-100" id="marriage_status" name="marriage_status"
+                                    required>
+                                <option value="">Choose...</option>
+                                <option>Married</option>
+                                <option>Single</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select the marriage status.
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="gender">Gender</label>
+                            <select class="custom-select d-block w-100" id="gender" name="gender" required>
+                                <option value="">Choose...</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select the gender.
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="age">Age</label>
+                            <input type="text" class="form-control" id="age" name="age" placeholder="" required
+                                   ng-model="age" ng-change="checkAge()">
+                            <div class="alert alert-danger" role="alert"
+                                 ng-if="age && ageInputInvalid"
+                                 style="width: 100%;">
+                                <strong>Invalid: </strong> Age is not an Integer.
+                            </div>
+                            <div class="invalid-feedback">
+                                Age required.
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="income">Income</label>
+                            <input type="text" class="form-control" id="income" name="income" placeholder="" required
+                                   ng-model="income" ng-change="checkIncome()">
+                            <div class="alert alert-danger" role="alert"
+                                 ng-if="income && incomeInputInvalid"
+                                 style="width: 100%;">
+                                <strong>Invalid: </strong> Income is not an Integer.
+                            </div>
+                            <div class="invalid-feedback">
+                                Income required.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-if="kind =='business'" th:object="${BusinessCustomer}">
+                        <div class="col-md-5 mb-3">
+                            <label for="category">Business Category</label>
+                            <select class="custom-select d-block w-100" id="category" name="category_id" required>
+                                <option value="">Choose...</option>
+                                <option th:each="item:${business_categories}" th:value="${item.id}"
+                                        th:text="${item.category}"></option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a business category.
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="annual_income">Annual Income</label>
+                            <input type="text" class="form-control" id="annual_income" name="annual_income"
+                                   placeholder="" required ng-model="annual_income" ng-change="checkAnnualIncome()">
+                            <div class="alert alert-danger" role="alert"
+                                 ng-if="annual_income && annualIncomeInputInvalid"
+                                 style="width: 100%;">
+                                <strong>Invalid: </strong> Annual income is not an Integer.
+                            </div>
+                            <div class="invalid-feedback">
+                                Annual income required.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="mb-4">
+                <button class="btn btn-primary btn-lg btn-block" type="submit"
+                        ng-disabled="usernameInvalid || usernameInputInvalid || passwordInputInvalid
+                        || nameInputInvalid || streetInputInvalid || (zip_code && !zipValid)
+                         || ageInputInvalid || incomeInputInvalid || annualIncomeInputInvalid">
+                    Continue to register
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">&copy; Bookstore</p>
+        <ul class="list-inline">
+            <li class="list-inline-item"><a href="#">Privacy</a></li>
+            <li class="list-inline-item"><a href="#">Terms</a></li>
+            <li class="list-inline-item"><a href="#">Support</a></li>
+        </ul>
+    </footer>
+</div>
+
+<script>
+    var app = angular.module("myApp", []);
+
+    app.controller('myCtrl', function ($scope, $http, $filter) {
+        $http.get('/api/zips').then(function (response) {
+            $scope.zips = response.data;
+        });
+        $http.get('/api/customers').then(function (response) {
+            $scope.customers = response.data;
+        });
+        $scope.checkUsername = function () {
+            $http.get('/api/customers').then(function (response) {
+                $scope.customers = response.data;
+            });
+            if ($scope.username && $scope.username.trim()) {
+                $scope.existsUsers = $filter('filter')($scope.customers, {
+                    username: $scope.username
+                }, true);
+                $scope.usernameInvalid = $scope.existsUsers.length > 0;
+            } else
+                $scope.usernameInvalid = false;
+        };
+        $scope.checkZip = function () {
+            if ($scope.zip_code) {
+                $scope.existsZips = $filter('filter')($scope.zips, {
+                    zip_code: Number($scope.zip_code)
+                }, true)
+                $scope.zipValid = $scope.existsZips.length > 0;
+            } else
+                $scope.zipValid = false;
+        };
+        $scope.isInteger = function (value) {
+            if (Number(value) % 1 === 0)
+                return Number(value) >= 0 && Number(value) <= 2147483647;
+            else return false;
+        };
+        $scope.ageInputInvalid = false;
+        $scope.checkAge = function () {
+            $scope.ageInputInvalid = !this.isInteger(this.age);
+        }
+        $scope.incomeInputInvalid = false;
+        $scope.checkIncome = function () {
+            $scope.incomeInputInvalid = !this.isInteger(this.income);
+        }
+        $scope.annualIncomeInputInvalid = false;
+        $scope.checkAnnualIncome = function () {
+            $scope.annualIncomeInputInvalid = !this.isInteger(this.annual_income);
+        }
+    })
+</script>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="js/jquery.slim.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/holder.min.js"></script>
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict';
+
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+</body>
+</html>

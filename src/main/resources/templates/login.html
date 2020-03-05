@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Login Page</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/signin.css" rel="stylesheet">
+    <script src="js/angular.min.js"></script>
+</head>
+<body class="text-center" ng-app="myApp">
+<form class="form-signin" th:action="@{/login}" method="post">
+    <img class="mb-4" src="image/bootstrap-solid.svg" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal">Please Sign In</h1>
+    <label for="username" class="sr-only">Username</label>
+    <input type="text" id="username" name="username" class="form-control" placeholder="Username" required
+           autofocus ng-model="username">
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+
+    <div class="alert alert-danger" role="alert" th:if="${invalid}" ng-hide="username">
+        <strong>Invalid: </strong> username or password is wrong
+    </div>
+    <!--<div class="checkbox mb-3">-->
+    <!--<label>-->
+    <!--<input type="checkbox" value="remember-me"> Remember me-->
+    <!--</label>-->
+    <!--</div>-->
+    <p class="mb-4"></p>
+    <a href="/register">Sign Up</a>
+    <p class="mb-4"></p>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
+    <p class="mt-5 mb-3 text-muted">&copy; Bookstore</p>
+</form>
+<script>
+    var app = angular.module("myApp", []);
+</script>
+</body>
+<!--<body>-->
+<!--<table>-->
+<!--<tr>-->
+<!--<th>Customer Id</th>-->
+<!--<th>Username</th>-->
+<!--<th>Password</th>-->
+<!--</tr>-->
+<!--<tr th:each="customer:${customers}">-->
+<!--<td th:text="${customer.id}"></td>-->
+<!--<td th:text="${customer.username}"></td>-->
+<!--<td th:text="${customer.password}"></td>-->
+<!--</tr>-->
+<!--</table>-->
+<!--</body>-->
+</html>

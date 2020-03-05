@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>History</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/books.css" rel="stylesheet">
+    <script src="js/angular.min.js"></script>
+</head>
+<body ng-controller="myCtrl">
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Bookstore</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/books">Books <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                       th:text="${name} ? ${name} : 'Guest'">
+                        Dropdown
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" th:if="${name}">
+                        <a class="dropdown-item" href="/personal_info">Personal Information</a>
+                        <a class="dropdown-item" href="#">Shopping History</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/logout">Logout</a>
+                    </div>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" th:unless="${name}">
+                        <a class="dropdown-item" href="/login">Login</a>
+                        <a class="dropdown-item" href="/register">Register</a>
+                    </div>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search"
+                       aria-label="Search" ng-model="query">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+</header>
+<main role="main" class="col-md-12 ml-sm-auto col-lg-12">
+
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Order Number</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>StoreId</th>
+                <th>Timestamp</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="history in (histories | filter : query | orderBy : 'date_time' : true) track by $index ">
+                <td>{{$index + 1}}</td>
+                <td>{{history.order_number}}</td>
+                <td>{{history.name}}</td>
+                <td>{{history.price}}</td>
+                <td>{{history.quantity}}</td>
+                <td>{{history.store_id}}</td>
+                <td>{{history.date_time}}</td>
+            </tr>
+            <!--<tr th:each="history, index: ${histories}">-->
+            <!--<td th:text="${index.index + 1}"></td>-->
+            <!--<td th:text="${history.order_number}"></td>-->
+            <!--<td th:text="${history.name}"></td>-->
+            <!--<td th:text="${history.price}"></td>-->
+            <!--<td th:text="${history.quantity}"></td>-->
+            <!--<td th:text="${history.store_id}"></td>-->
+            <!--<td th:text="${history.date_time}"></td>-->
+            <!--</tr>-->
+            </tbody>
+        </table>
+    </div>
+
+</main>
+<footer class="bg-light">
+    <div class="container">
+        <p class="float-right">
+            <a href="#">Back to top</a>
+        </p>
+        <!--<p>Album example is &copy; Bootstrap, but please download and customize it for yourself!</p>-->
+        <!--<p>New to Bootstrap? <a href="../../../../..">Visit the homepage</a> or read our <a-->
+        <!--href="../../getting-started/">getting-->
+        <!--started guide</a>.</p>-->
+    </div>
+</footer>
+<script>
+    var app = angular.module("myApp", []);
+
+    app.controller('myCtrl', function ($scope, $http) {
+        $http.get('/api/customers/history').then(function (response) {
+            $scope.histories = response.data;
+        })
+    });
+</script>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="js/jquery.slim.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/holder.min.js"></script>
+</body>
+</html>

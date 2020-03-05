@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Books</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/books.css" rel="stylesheet">
+    <script src="js/angular.min.js"></script>
+</head>
+<body ng-controller="myCtrl">
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Bookstore</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/books">Books <span class="sr-only">(current)</span></a>
+                </li>
+                <!--<li class="nav-item dropdown">-->
+                <!--<a class="nav-link dropdown-toggle" href="#" id="category" role="button"-->
+                <!--data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+                <!--Category-->
+                <!--</a>-->
+                <!--&lt;!&ndash;<div class="dropdown-menu" aria-labelledby="navbarDropdown" th:if="${name}">&ndash;&gt;-->
+                <!--&lt;!&ndash;<a class="dropdown-item" href="#">Personal Information</a>&ndash;&gt;-->
+                <!--&lt;!&ndash;<a class="dropdown-item" href="/history">Shopping History</a>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="dropdown-divider"></div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<a class="dropdown-item" href="/logout">Logout</a>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--<div class="dropdown-menu" aria-labelledby="navbarDropdown" ng-model="queryByCategory">-->
+                <!--<div ng-repeat="item in categories">-->
+                <!--<a class="dropdown-item" href="#"-->
+                <!--value="item.id">{{item.category}}</a>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--{{'{'+queryByCategory+'}'}}-->
+                <!--</li>-->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                       th:text="${name} ? ${name} : 'Guest'">
+                        Dropdown
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" th:if="${name}">
+                        <a class="dropdown-item" href="/personal_info">Personal Information</a>
+                        <a class="dropdown-item" href="/history">Shopping History</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/logout">Logout</a>
+                    </div>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" th:unless="${name}">
+                        <a class="dropdown-item" href="/login">Login</a>
+                        <a class="dropdown-item" href="/register">Register</a>
+                    </div>
+                </li>
+                <!--<li class="nav-item">-->
+                <!--<a class="nav-link" href="#">Link</a>-->
+                <!--</li>-->
+                <!--<li class="nav-item dropdown">-->
+                <!--<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"-->
+                <!--data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+                <!--Dropdown-->
+                <!--</a>-->
+                <!--<div class="dropdown-menu" aria-labelledby="navbarDropdown">-->
+                <!--<a class="dropdown-item" href="#">Action</a>-->
+                <!--<a class="dropdown-item" href="#">Another action</a>-->
+                <!--<div class="dropdown-divider"></div>-->
+                <!--<a class="dropdown-item" href="#">Something else here</a>-->
+                <!--</div>-->
+                <!--</li>-->
+                <!--<li class="nav-item">-->
+                <!--<a class="nav-link disabled" href="#">Disabled</a>-->
+                <!--</li>-->
+            </ul>
+            <!--<ul class="navbar-nav pull-right">-->
+            <!--<li class="nav-item dropdown">-->
+            <!--<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"-->
+            <!--data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+            <!--Dropdown-->
+            <!--</a>-->
+            <!--<div class="dropdown-menu" aria-labelledby="navbarDropdown">-->
+            <!--<a class="dropdown-item" href="#">Personal Information</a>-->
+            <!--<a class="dropdown-item" href="#">Shopping History</a>-->
+            <!--&lt;!&ndash;<div class="dropdown-divider"></div>&ndash;&gt;-->
+            <!--&lt;!&ndash;<a class="dropdown-item" href="#">Something else here</a>&ndash;&gt;-->
+            <!--</div>-->
+            <!--</li>-->
+            <!--</ul>-->
+            <form class="form-inline col-md-2 col-xl-2 my-2 my-lg-0">
+                <select class="custom-select d-block w-100 align-self-auto" id="rank" name="rank" required
+                        ng-model="queryByPrice" ng-change="reRank()">
+                    <option value="">Rerank Price...</option>
+                    <option value="false">Low</option>
+                    <option value="true">High</option>
+                </select>
+            </form>
+
+            <form class="form-inline col-md-2 my-2 my-lg-0">
+                <select class="custom-select d-block w-100 align-self-auto" id="category" name="category" required
+                        ng-model="queryByCategory" ng-change="resetPage()">
+                    <option value="">Choose Category...</option>
+                    <option ng-repeat="item in categories" value="{{item.id}}">{{item.category}}</option>
+                </select>
+            </form>
+
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search"
+                       aria-label="Search" ng-model="query" ng-change="resetPage()">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit" ng-click="doSearch()">Search
+                </button>
+            </form>
+        </div>
+    </nav>
+    <!--<div class="collapse bg-dark" id="navbarHeader">-->
+    <!--<div class="container">-->
+    <!--<div class="row">-->
+    <!--<div class="col-sm-8 col-md-7 py-4">-->
+    <!--<h4 class="text-white">About</h4>-->
+    <!--<p class="text-muted">Add some information about the album below, the author, or any other-->
+    <!--background context. Make it a few sentences long so folks can pick up some informative tidbits.-->
+    <!--Then, link them off to some social networking sites or contact information.</p>-->
+    <!--</div>-->
+    <!--<div class="col-sm-4 offset-md-1 py-4">-->
+    <!--<h4 class="text-white">Contact</h4>-->
+    <!--<ul class="list-unstyled">-->
+    <!--<li><a href="#" class="text-white">Follow on Twitter</a></li>-->
+    <!--<li><a href="#" class="text-white">Like on Facebook</a></li>-->
+    <!--<li><a href="#" class="text-white">Email me</a></li>-->
+    <!--</ul>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="navbar navbar-dark bg-dark shadow-sm">-->
+    <!--<div class="container d-flex justify-content-between">-->
+    <!--<a href="#" class="navbar-brand d-flex align-items-center">-->
+    <!--<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"-->
+    <!--stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">-->
+    <!--<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>-->
+    <!--<circle cx="12" cy="13" r="4"></circle>-->
+    <!--</svg>-->
+    <!--<strong>Album</strong>-->
+    <!--</a>-->
+    <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader"-->
+    <!--aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">-->
+    <!--<span class="navbar-toggler-icon"></span>-->
+    <!--</button>-->
+    <!--</div>-->
+    <!--</div>-->
+</header>
+
+<main role="main">
+
+    <!--<section class="jumbotron text-center">-->
+    <!--<div class="container">-->
+    <!--<h1 class="jumbotron-heading">Album example</h1>-->
+    <!--<p class="lead text-muted">Something short and leading about the collection below—its contents, the creator,-->
+    <!--etc. Make it short and sweet, but not too short so folks don't simply skip over it entirely.</p>-->
+    <!--<p>-->
+    <!--<a href="#" class="btn btn-primary my-2">Main call to action</a>-->
+    <!--<a href="#" class="btn btn-secondary my-2">Secondary action</a>-->
+    <!--</p>-->
+    <!--</div>-->
+    <!--</section>-->
+
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div class="row">
+
+                <!--<div class="col-md-4"-->
+                <!--ng-repeat="product in products-->
+                <!--| filter:query">-->
+                <div class="col-md-4"
+                     ng-repeat="product in (filtered = (products
+                    | filter:{ name: query, category_id: queryByCategory}) | orderBy:reRankBy:reverse | limitTo:qty:page )">
+                    <!--| filter: greaterThan('inventory_amount', 0)-->
+                    <!--| limitTo:qty:start-->
+
+                    <form id="cartForm" th:action="@{/books/buy}" th:object="${Product}" method="post">
+                        <div class="card mb-4 shadow-sm">
+                            <img class="card-img-top"
+                                 ng-src="{{(product.image_url)}}"
+                                 alt="Card image cap">
+                            <div class="card-body">
+                                <input hidden name="store_id" ng-value="product.store_id">
+                                <input hidden name="product_id" ng-value="product.id">
+                                <p class="card-text">{{product.name}}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">{{'Inventory: '+product.inventory_amount}}</small>
+                                    <small class="text-muted">{{'StoreId: '+product.store_id}}</small>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">{{'Price: ' +
+                                        product.price}}
+                                    </small>
+                                    <small class="text-muted">Quantity:</small>
+                                    <small class="text-muted" ng-model="quantity">{{quantity}}
+                                    </small>
+                                    <input hidden name="quantity" ng-value="quantity">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                ng-disabled="quantity == 1" ng-click="dec()">-
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                ng-disabled="quantity == product.inventory_amount" ng-click="inc()">
+                                            +
+                                        </button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                            Add to cart
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+
+                <!--<div class="col-md-4">-->
+                <!--<div class="card mb-4 shadow-sm">-->
+                <!--<img class="card-img-top"-->
+                <!--data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail"-->
+                <!--alt="Card image cap">-->
+                <!--<div class="card-body">-->
+                <!--<p class="card-text">This is a wider card with supporting text below as a natural lead-in to-->
+                <!--additional content. This content is a little bit longer.</p>-->
+                <!--<div class="d-flex justify-content-between align-items-center">-->
+                <!--<div class="btn-group">-->
+                <!--<button type="button" class="btn btn-sm btn-outline-secondary">View</button>-->
+                <!--<button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>-->
+                <!--</div>-->
+                <!--<small class="text-muted">9 mins</small>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</div>-->
+
+            </div>
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-secondary btn-lg"
+                        ng-disabled="page == 0" ng-click="previousPage()">
+                    Previous Page
+                </button>
+                <button type="button" class="btn btn-primary btn-lg"
+                        ng-disabled="page >= filtered.length - qty" ng-click="nextPage()">
+                    Next Page
+                </button>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<footer class="bg-light">
+    <div class="container">
+        <p class="float-right">
+            <a href="#">Back to top</a>
+        </p>
+        <!--<p>Album example is &copy; Bootstrap, but please download and customize it for yourself!</p>-->
+        <!--<p>New to Bootstrap? <a href="../../../../..">Visit the homepage</a> or read our <a-->
+        <!--href="../../getting-started/">getting-->
+        <!--started guide</a>.</p>-->
+    </div>
+</footer>
+
+<script>
+    var app = angular.module("myApp", []);
+
+    app.controller('myCtrl', function ($scope, $http, $anchorScroll) {
+        $scope.page = 0;
+        $scope.qty = 9;
+        $http.get('/api/products/valid').then(function (response) {
+            $scope.products = response.data;
+            // $scope.totalItems = $scope.products.length - $scope.qty;
+        });
+        $http.get('/api/products/categories').then(function (response) {
+            $scope.categories = response.data;
+        });
+        $scope.quantity = 1;
+        $scope.greaterThan = function (prop, val) {
+            return function (item) {
+                return item[prop] > val;
+            }
+        };
+        $scope.inc = function () {
+            this.quantity += 1;
+        };
+        $scope.dec = function () {
+            if (this.quantity > 1) {
+                this.quantity -= 1;
+            }
+        };
+        $scope.nextPage = function () {
+            this.page += this.qty;
+            $anchorScroll();
+        };
+        $scope.previousPage = function () {
+            if (this.page > 0) {
+                this.page -= this.qty;
+            }
+            $anchorScroll();
+        };
+        $scope.resetPage = function () {
+            this.page = 0;
+        };
+        $scope.queryByPrice = '';
+        $scope.reRankBy = '';
+        $scope.reRank = function () {
+            if ($scope.queryByPrice === 'false') {
+                $scope.reRankBy = "'price'";
+                $scope.reverse = '';
+            } else if ($scope.queryByPrice) {
+                $scope.reRankBy = "'price'";
+                $scope.reverse = "'reverse'";
+            } else {
+                $scope.reRankBy = '';
+                $scope.reverse = '';
+            }
+            $scope.resetPage();
+        };
+        $scope.doSearch = function () {
+            $http.get('/api/products/valid').then(function (response) {
+                $scope.products = response.data;
+                // $scope.totalItems = $scope.products.length - $scope.qty;
+            });
+            this.page = 0;
+        }
+    });
+</script>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="js/jquery.slim.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/holder.min.js"></script>
+</body>
+</html>
